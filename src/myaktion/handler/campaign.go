@@ -12,12 +12,12 @@ func CreateCampaign(w http.ResponseWriter, r *http.Request) {
 	var campaign model.Campaign
 	err := json.NewDecoder(r.Body).Decode(&campaign)
 	if err != nil {
-		log.Info("Can't serialize request body to campaign struct: %v", err)
+		log.Error("Can't serialize request body to campaign struct: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	if err := service.CreateCampaign(&campaign); err != nil {
-		log.Info("Error calling service CreateCampaign: %v", err)
+		log.Error("Error calling service CreateCampaign: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -27,9 +27,9 @@ func CreateCampaign(w http.ResponseWriter, r *http.Request) {
 func GetCampaigns(w http.ResponseWriter, _ *http.Request) {
 	campaigns, err := service.GetCampaigns()
 	if err != nil {
-	log.Errorf("Error calling service GetCampaigns: %v", err)
-	http.Error(w, err.Error(), http.StatusBadRequest)
-	return
+		log.Errorf("Error calling service GetCampaigns: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 	sendJson(w, campaigns)
-	}
+}

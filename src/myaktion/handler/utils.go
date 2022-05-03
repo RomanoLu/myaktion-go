@@ -2,8 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 )
 
 type result struct {
@@ -16,4 +18,14 @@ func sendJson(w http.ResponseWriter, value interface{}) {
 		log.Errorf("Failure encoding value to JSON: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func getId(r *http.Request) (uint, error) {
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["id"], 10, 0)
+	if err != nil {
+		log.Errorf("Can't get ID from request: %v", err)
+		return 0, err
+	}
+	return uint(id), nil
 }
