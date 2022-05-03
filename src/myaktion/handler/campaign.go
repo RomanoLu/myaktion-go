@@ -21,23 +21,15 @@ func CreateCampaign(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(campaign); err != nil {
-		log.Info("Failure encoding value to JSON: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	sendJson(w, campaign)
 }
 
 func GetCampaigns(w http.ResponseWriter, _ *http.Request) {
 	campaigns, err := service.GetCampaigns()
 	if err != nil {
-		log.Info("Error calling service GetCampaigns: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	log.Errorf("Error calling service GetCampaigns: %v", err)
+	http.Error(w, err.Error(), http.StatusBadRequest)
+	return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(campaigns); err != nil {
-		log.Info("Failure encoding value to JSON: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	sendJson(w, campaigns)
 	}
-}

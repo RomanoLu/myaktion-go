@@ -18,7 +18,7 @@ func CreateCampaign(campaign *model.Campaign) error {
 	campaignStore[actCampaignId] = campaign
 	actCampaignId += 1
 	log.Info("Successfully stored new campaign with ID %v in database.", campaign.ID)
-	log.Info("Stored: %v", campaign)
+	log.Trace("Stored: %v", campaign)
 	return nil
 }
 
@@ -27,6 +27,6 @@ func GetCampaigns() ([]model.Campaign, error) {
 	for _, campaign := range campaignStore {
 	campaigns = append(campaigns, *campaign)
 	}
-	log.Info("Retrieved: %v", campaigns)
+	log.Trace("Retrieved: %v", campaigns)
 	return campaigns, nil
 	}

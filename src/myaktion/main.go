@@ -5,7 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"os"
+	//"os"
 )
 
 func main() {
@@ -21,13 +21,14 @@ func main() {
 
 func init() {
 	// init logger
+	log.SetLevel(log.TraceLevel)
 	log.SetFormatter(&log.TextFormatter{})
 	log.SetReportCaller(true)
-	level, err := log.ParseLevel(os.Getenv("LOG_LEVEL"))
+	/*level, err := log.ParseLevel(os.Getenv("LOG_LEVEL"))
 	if err != nil {
 		log.Info("Log level not specified, set default to: INFO")
 		log.SetLevel(log.InfoLevel)
 		return
 	}
-	log.SetLevel(level)
+	log.SetLevel(level)*/
 }
