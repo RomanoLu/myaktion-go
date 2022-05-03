@@ -1,6 +1,7 @@
 package model
 
-type Campaing struct{
+type Campaign struct{
+	ID uint
 	Name string
 	DonaitionMinimum float32 
 	TargetAmount float32
