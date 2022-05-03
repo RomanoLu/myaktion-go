@@ -9,8 +9,8 @@ type Donaition struct{
 	Account Account
 }
 
-type Status int
+type Status string
 const (
-	INPROCESS = iota
-	TRANSFERRED 
+	IN_PROCESS Status ="IN_PROCESS"
+	TRANSFERRED Status ="TRANSFERRED"
 )
