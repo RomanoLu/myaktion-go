@@ -1,10 +1,12 @@
 package main
 
 import (
+	"net/http"
+
+	"github.com/RomanoLu/myaktion-go/src/myaktion/db"
 	"github.com/RomanoLu/myaktion-go/src/myaktion/handler"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func main() {
@@ -23,6 +25,7 @@ func main() {
 }
 
 func init() {
+	db.Init()
 	// init logger
 	log.SetLevel(log.TraceLevel)
 	log.SetFormatter(&log.TextFormatter{})
