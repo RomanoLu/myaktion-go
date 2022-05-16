@@ -2,10 +2,11 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
+	"fmt"
 	"net/http"
 	"strconv"
+	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 type result struct {
@@ -27,5 +28,8 @@ func getId(r *http.Request) (uint, error) {
 		log.Errorf("Can't get ID from request: %v", err)
 		return 0, err
 	}
+	fmt.Println(id)
 	return uint(id), nil
 }
+
+

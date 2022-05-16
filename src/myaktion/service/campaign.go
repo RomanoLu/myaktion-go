@@ -29,4 +29,32 @@ func GetCampaigns() ([]model.Campaign, error) {
 	}
 	log.Trace("Retrieved: %v", campaigns)
 	return campaigns, nil
-	}
+}
+
+func GetCampaign(id uint) (model.Campaign, error) {
+	var requestedCampaign model.Campaign
+	requestedCampaign = *campaignStore[id]
+	log.Trace("Retrieved: %v", requestedCampaign)
+	return requestedCampaign, nil
+}
+
+func UpdateCampaign(campaign model.Campaign, id uint) (model.Campaign, error) {
+	campaignStore[id] = &campaign
+	log.Trace("Updated: %v", campaign)
+	return campaign, nil
+}
+
+func DeleteCampaign(id uint) error{
+	delete(campaignStore, id)
+	log.Trace("Deleted: %v", id)
+	return nil
+}
+
+func AddDonation(donation model.Donaition, id uint) error{
+	 campaign := campaignStore[id]	
+	 campaign.Donaitions = append(campaign.Donaitions, donation)
+	 log.Trace("Added Donation: %v", donation)
+	return nil
+}
+
+	

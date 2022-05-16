@@ -5,7 +5,6 @@ import (
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	//"os"
 )
 
 func main() {
@@ -14,6 +13,10 @@ func main() {
 	router.HandleFunc("/campaign", handler.CreateCampaign).Methods("POST")
 	router.HandleFunc("/health", handler.Health).Methods("GET")
 	router.HandleFunc("/campaigns", handler.GetCampaigns).Methods("GET")
+	router.HandleFunc("/campaigns/{id}", handler.GetCampaign).Methods("GET")
+	router.HandleFunc("/campaigns/{id}", handler.UpdateCampaign).Methods("UPDATE")
+	router.HandleFunc("/campaigns/{id}", handler.DeleteCampaign).Methods("DELETE")
+	router.HandleFunc("/campaigns/{id}/donation", handler.AddDonation).Methods("POST")
 	if err := http.ListenAndServe(":8000", router); err != nil {
 		log.Fatal(err)
 	}
