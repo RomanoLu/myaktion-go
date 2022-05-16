@@ -10,15 +10,13 @@ import (
 )
 
 func CreateCampaign(w http.ResponseWriter, r *http.Request) {
-	var campaign model.Campaign
-	err := json.NewDecoder(r.Body).Decode(&campaign)
+	campaign, err := getCampaign(r)
 	if err != nil {
-		log.Error("Can't serialize request body to campaign struct: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	if err := service.CreateCampaign(&campaign); err != nil {
-		log.Error("Error calling service CreateCampaign: %v", err)
+	if err := service.CreateCampaign(campaign); err != nil {
+		log.Errorf("Error calling service CreateCampaign: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -37,78 +35,72 @@ func GetCampaigns(w http.ResponseWriter, _ *http.Request) {
 
 func GetCampaign(w http.ResponseWriter, r *http.Request) {
 	id, err := getId(r)
-	log.Info(id)
 	if err != nil {
-		log.Errorf("Error calling service GetCampaign: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	campaigns, err := service.GetCampaign(id)
+	campaign, err := service.GetCampaign(id)
 	if err != nil {
-		log.Errorf("Error calling service GetCampaign: %v", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Errorf("Failure retrieving campaign with ID %v: %v", id, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	sendJson(w, campaigns)
+	if campaign == nil {
+		http.Error(w, "404 campaign not found", http.StatusNotFound)
+		return
+	}
+	sendJson(w, campaign)
 }
 
 func UpdateCampaign(w http.ResponseWriter, r *http.Request) {
-	var campaign model.Campaign
-	err := json.NewDecoder(r.Body).Decode(&campaign)
-	if err != nil {
-		log.Error("Can't serialize request body to campaign struct: %v", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 	id, err := getId(r)
 	if err != nil {
-		log.Errorf("Error calling service GetCampaign: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	campaigns, err := service.UpdateCampaign(campaign, id)
+	campaign, err := getCampaign(r)
 	if err != nil {
-		log.Errorf("Error calling service GetCampaign: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	sendJson(w, campaigns)
+	campaign, err = service.UpdateCampaign(id, campaign)
+	if err != nil {
+		log.Errorf("Failure updating campaign with ID %v: %v", id, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if campaign == nil {
+		http.Error(w, "404 campaign not found", http.StatusNotFound)
+		return
+	}
+	sendJson(w, campaign)
 }
 
 func DeleteCampaign(w http.ResponseWriter, r *http.Request) {
 	id, err := getId(r)
 	if err != nil {
-		log.Errorf("Error calling service GetCampaign: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = service.DeleteCampaign(id)
+	campaign, err := service.DeleteCampaign(id)
 	if err != nil {
-		log.Errorf("Error calling service GetCampaign: %v", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Errorf("Failure deleting campaign with ID %v: %v", id, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if campaign == nil {
+		http.Error(w, "404 campaign not found", http.StatusNotFound)
+		return
+	}
+	sendJson(w, result{Success: "OK"})
 }
 
-func AddDonation(w http.ResponseWriter, r *http.Request) {
-	var donation model.Donaition
-	err := json.NewDecoder(r.Body).Decode(&donation)
+func getCampaign(r *http.Request) (*model.Campaign, error) {
+	var campaign model.Campaign
+	err := json.NewDecoder(r.Body).Decode(&campaign)
 	if err != nil {
-		log.Error("Can't serialize request body to campaign struct: %v", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		log.Errorf("Can't serialize request body to campaign struct: %v", err)
+		return nil, err
 	}
-	id, err := getId(r)
-	if err != nil {
-		log.Errorf("Error calling service GetCampaign: %v", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	
-	if err := service.AddDonation(donation,id); err != nil {
-		log.Errorf("Error calling service GetCampaign: %v", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	return &campaign, nil
 }
-
