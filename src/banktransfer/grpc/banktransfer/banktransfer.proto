@@ -1,7 +1,7 @@
 syntax = "proto3";
 package banktransfer;
 import "google/protobuf/empty.proto";
-option go_package = "github.com/turngeek/myaktion-go/src/banktransfer/grpc/banktransfer";
+option go_package = "github.com/RomanoLu/myaktion-go/src/banktransfer/grpc/banktransfer";
 
 
 service BankTransfer {

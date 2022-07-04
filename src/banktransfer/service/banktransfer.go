@@ -4,18 +4,15 @@ import (
 	"context"
 	"time"
 
+	"github.com/RomanoLu/myaktion-go/src/banktransfer/grpc/banktransfer"
 	log "github.com/sirupsen/logrus"
-	"github/RomanoLu/myaktion-go/src/banktransfer/grpc/banktransfer"
 	"google.golang.org/protobuf/types/known/emptypb"
-
 )
-
-
 
 type BankTransferService struct {
 	banktransfer.BankTransferServer
 	counter int32
-	}
+}
 
 func NewBankTransferService() *BankTransferService {
 	return &BankTransferService{counter: 1}
@@ -33,9 +30,11 @@ func (s *BankTransferService) ProcessTransactions(stream banktransfer.BankTransf
 	return func() error {
 		for {
 			select {
-			case <-stream.Context().Done(): log.Info("Watching transactions cancelled from the client side")
+			case <-stream.Context().Done():
+				log.Info("Watching transactions cancelled from the client side")
 				return nil
-			case _ = <-ticker.C: transaction := &banktransfer.Transaction{Id: s.counter, Amount: 20}
+			case _ = <-ticker.C:
+				transaction := &banktransfer.Transaction{Id: s.counter, Amount: 20}
 				entry := log.WithField("transaction", transaction)
 				entry.Info("Sending transaction")
 				if err := stream.Send(transaction); err != nil {
@@ -57,5 +56,5 @@ func (s *BankTransferService) ProcessTransactions(stream banktransfer.BankTransf
 				}
 			}
 		}
-		}()
-	}
+	}()
+}

@@ -21,7 +21,7 @@ func AddDonation(campaignId uint, donation *model.Donation) error {
 	if result.Error != nil {
 		return result.Error
 	}
-	//----------- Call gRPC service
+	
 	conn, err := client.GetBankTransferConnection()
 	if err != nil {
 		log.Errorf("error connecting to the banktransfer service: %v", err)
@@ -44,8 +44,7 @@ func AddDonation(campaignId uint, donation *model.Donation) error {
 		deleteDonation(donation)
 		return err
 	}
-	//---------
-
+	
 	entry := log.WithField("ID", campaignId)
 	entry.Info("Successfully added new donation to campaign in database.")
 	entry.Tracef("Stored: %v", donation)
