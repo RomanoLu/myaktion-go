@@ -7,7 +7,11 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 )
 
-require github.com/go-sql-driver/mysql v1.6.0 // indirect
+require (
+	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
+)
 
 require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
